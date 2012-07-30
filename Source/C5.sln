@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C5", "C5\C5.csproj", "{7D5DF295-7FF8-484D-BEB2-173817F1E30F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{8A2894D7-CF42-41AE-9F56-4B221CC4B686}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7D5DF295-7FF8-484D-BEB2-173817F1E30F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D5DF295-7FF8-484D-BEB2-173817F1E30F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D5DF295-7FF8-484D-BEB2-173817F1E30F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D5DF295-7FF8-484D-BEB2-173817F1E30F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A2894D7-CF42-41AE-9F56-4B221CC4B686}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A2894D7-CF42-41AE-9F56-4B221CC4B686}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A2894D7-CF42-41AE-9F56-4B221CC4B686}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A2894D7-CF42-41AE-9F56-4B221CC4B686}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Test\Test.csproj
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = None
+		$1.ResourceNamePolicy = FileFormatDefault
+	EndGlobalSection
+EndGlobal

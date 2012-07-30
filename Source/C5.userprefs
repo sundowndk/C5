@@ -1,0 +1,30 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Test/Main.cs">
+    <Files>
+      <File FileName="C5/C5/InvoiceLine.cs" Line="66" Column="17" />
+      <File FileName="C5/C5.Enums/InvoiceType.cs" Line="3" Column="13" />
+      <File FileName="Test/Main.cs" Line="17" Column="53" />
+      <File FileName="C5/C5/Helpers.cs" Line="24" Column="5" />
+      <File FileName="C5/C5/Invoice.cs" Line="358" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="C5" expanded="True">
+            <Node name="C5" expanded="True" />
+            <Node name="C5.Enums" expanded="True" />
+          </Node>
+          <Node name="Test" expanded="True">
+            <Node name="References" expanded="True" />
+            <Node name="Main.cs" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
