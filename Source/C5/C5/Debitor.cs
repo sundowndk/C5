@@ -213,7 +213,215 @@ namespace C5
 			this._vatno = string.Empty;
 		}
 
-		public static Debitor Get (string AccountId)
+		public void Save ()
+		{
+			if (this._accountid == string.Empty)
+			{
+				int sequencenumber = C5.Helpers.GetSequenceNumber ();
+				string id = C5.Helpers.GetDebitorId ();
+
+				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Insert);
+				qb.Table ("debkart");
+				
+				qb.Columns 	
+					(
+						"dataset",
+						"lxbenummer",
+						"sidstrettet",
+						"lxs",
+						"konto",
+
+						"NAVN",
+						"ADRESSE1",
+						"ADRESSE2",
+						"POSTBY",
+						"LAND",
+
+						"ATTENTION",
+						"TELEFON",
+						"TELEFAX",
+						"FAKTURAKONTO",
+						"GRUPPE",
+
+						"FASTRABAT",
+						"GODKENDT",
+						"PRISGRUPPE",
+						"rabatgruppe",
+						"KASSERABAT",
+						"BILLEDE",
+
+						"VALUTA",
+						"SPROG",
+						"BETALING",
+						"LEVERING",
+						"SPXRRET",
+
+						"SXLGER",
+						"MOMS",
+						"SLETSTATISTIK",
+						"GIRONUMMER",
+						"MOMSNUMMER",
+
+						"RENTE",
+						"AFDELING",
+						"RYKKERKODE",
+						"ENGANGSKUNDE",
+						"BEHOLDNING",
+
+						"EDIADRESSE",
+						"SALDO",
+						"SALDO30",
+						"SALDO60",
+						"SALDO90",
+
+						"SALDO120",
+						"SALDOOVER120",
+						"FORFALDEN",
+						"BEREGNET",
+						"SALDOMAX",
+
+						"SALDODKK",
+						"SXGENAVN",
+						"SLETTRANSPORT",
+						"KONTANT",
+						"INDBETALMXDE",
+
+						"ORDREGRUPPE",
+						"PROJEKTGRUPPE",
+						"HANDELSKODE",
+						"TRANSKODE",
+						"EMAIL",
+
+						"URL",
+						"MOBIL",
+						"KRAKNR"
+						);
+				qb.Values
+					(
+						"DAT",
+						sequencenumber,
+						string.Empty,
+						0,
+						id.PadLeft (10, ' '),
+
+						string.Empty,
+						string.Empty,
+						string.Empty,
+						string.Empty,
+						string.Empty,
+
+						string.Empty,
+						string.Empty,
+						string.Empty,
+						string.Empty,
+						string.Empty,
+
+						0,
+						0,
+						string.Empty,
+						string.Empty,
+						string.Empty,
+						string.Empty,
+
+						"DKK",
+						0,
+						string.Empty,
+						string.Empty,
+						0,
+
+						string.Empty,
+						string.Empty,
+						0,
+						string.Empty,
+						string.Empty,
+
+						string.Empty,
+						string.Empty,
+						0,
+						0,
+						0,
+
+						string.Empty,
+						0,
+						0,
+						0,
+						0,
+
+						0,
+						0,
+						0,
+						"2012-01-01 00:00:00.000",
+						0,
+
+						0,
+						string.Empty,
+						0,
+						0,
+						string.Empty,
+
+						string.Empty,
+						0,
+						0,
+						string.Empty,
+						string.Empty,
+
+						string.Empty,
+						string.Empty,
+						string.Empty
+					);
+
+				Query query = Runtime.DBConnection.Query (qb.QueryString);
+
+				if (query.AffectedRows == 0) 
+				{
+					throw new Exception ("COULD NOT CREATE NEW DEBITOR");
+				}
+							
+				query.Dispose ();
+				query = null;
+				qb = null;
+
+				this._accountid = id;
+			}
+
+			{
+				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Update);
+				qb.Table ("debkart");
+				
+				qb.Columns 	
+					(
+						"NAVN",
+						"ADRESSE1",
+						"ADRESSE2",
+						"POSTBY",
+						"LAND"
+					);
+
+				qb.Values
+					(
+						this._name,
+						this._address1,
+						this._address2,
+						this._postcode +" "+ this._city,
+						this._country
+						);
+
+				qb.AddWhere ("konto like '%"+ this._accountid +"'");
+
+				Query query = Runtime.DBConnection.Query (qb.QueryString);
+
+				if (query.AffectedRows == 0) 
+				{
+					throw new Exception ("COULD NOT CREATE NEW DEBITOR");
+				}
+				
+				query.Dispose ();
+				query = null;
+				qb = null;
+			}
+		}
+
+		public static Debitor Load (string AccountId)
 		{
 			Debitor result = new Debitor ();
 
@@ -291,7 +499,7 @@ namespace C5
 				{					
 					try
 					{
-						result.Add (Get (query.GetString (qb.ColumnPos ("konto")).Replace (" ", "")));
+						result.Add (Load (query.GetString (qb.ColumnPos ("konto")).Replace (" ", "")));
 					}
 					catch
 					{					

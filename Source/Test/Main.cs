@@ -20,26 +20,36 @@ namespace Test
 
 			if (testdebitor)
 			{
-				C5.Debitor debitor = C5.Debitor.Get ("1200380");
-				
-				Console.WriteLine ("Name: "+ debitor.Name);
-				Console.WriteLine ("Address1: "+ debitor.Address1);
-				Console.WriteLine ("Address2: "+ debitor.Address2);
-				Console.WriteLine ("PostCode: "+ debitor.PostCode);
-				Console.WriteLine ("City: "+ debitor.City);
-				Console.WriteLine ("Country: "+ debitor.Country);
-				Console.WriteLine ("Attention: "+ debitor.Attention);
-				Console.WriteLine ("Phone: "+ debitor.Phone);
-				Console.WriteLine ("Fax: "+ debitor.Fax);
-				Console.WriteLine ("Email: "+ debitor.Email);
-				Console.WriteLine ("Url: "+ debitor.Url);
-				Console.WriteLine ("VatNo: "+ debitor.VatNo);
+				Console.WriteLine ("GetDebitorId: "+ C5.Helpers.GetDebitorId ());
 
-				Console.WriteLine ("");
-				foreach (C5.Debitor d in C5.Debitor.List ())
-				{
-					Console.WriteLine (d.Name);
-				}
+				C5.Debitor debitor = new C5.Debitor ();
+				debitor.Name = "Rasmus Pedersen";
+				debitor.Address1 = "Agersøvej 303";
+				debitor.PostCode = "4200";
+				debitor.City = "Slagelse";
+				debitor.Save ();
+
+
+//				C5.Debitor debitor = C5.Debitor.Load ("1200380");
+//				
+//				Console.WriteLine ("Name: "+ debitor.Name);
+//				Console.WriteLine ("Address1: "+ debitor.Address1);
+//				Console.WriteLine ("Address2: "+ debitor.Address2);
+//				Console.WriteLine ("PostCode: "+ debitor.PostCode);
+//				Console.WriteLine ("City: "+ debitor.City);
+//				Console.WriteLine ("Country: "+ debitor.Country);
+//				Console.WriteLine ("Attention: "+ debitor.Attention);
+//				Console.WriteLine ("Phone: "+ debitor.Phone);
+//				Console.WriteLine ("Fax: "+ debitor.Fax);
+//				Console.WriteLine ("Email: "+ debitor.Email);
+//				Console.WriteLine ("Url: "+ debitor.Url);
+//				Console.WriteLine ("VatNo: "+ debitor.VatNo);
+//
+//				Console.WriteLine ("");
+//				foreach (C5.Debitor d in C5.Debitor.List ())
+//				{
+//					Console.WriteLine (d.Name);
+//				}
 			}
 
 			if (testinvoice)

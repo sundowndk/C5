@@ -28,6 +28,30 @@ namespace C5
 			
 			return result;
 		}
+
+		public static string GetDebitorId ()
+		{
+			string result = string.Empty;
+
+			Query query = Runtime.DBConnection.Query ("SELECT TOP 1 konto FROM debkart WHERE LEN(LTRIM(konto))=7 ORDER BY konto DESC");
+
+			if (query.Success)
+			{
+				if (query.NextRow ())
+				{
+					result = (int.Parse (query.GetString (0)) + 1).ToString ();
+				}
+			}
+			else
+			{
+				throw new Exception ("COULD NOT GET DEBITOR ID");
+			}
+			
+			query.Dispose ();
+			query = null;
+			
+			return result;
+		}
 	}
 }
 
