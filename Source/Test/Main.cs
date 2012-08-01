@@ -15,19 +15,32 @@ namespace Test
 				                                          "testdb",
 				                                          true);	
 
-			bool testdebitor = true;
+			bool testdebitor = false;
 			bool testinvoice = false;
+			bool testorder = true;
 
-			if (testdebitor)
+
+
+
+			if (testorder)
 			{
-				Console.WriteLine ("GetDebitorId: "+ C5.Helpers.GetDebitorId ());
+//				C5.Order o1 = C5.Order.Load ("11163");
 
-				C5.Debitor debitor = new C5.Debitor ();
-				debitor.Name = "Rasmus Pedersen";
-				debitor.Address1 = "Agersøvej 303";
-				debitor.PostCode = "4200";
-				debitor.City = "Slagelse";
-				debitor.Save ();
+//				Console.WriteLine (o1.Debitor.Name);
+
+				foreach (Order o in C5.Order.List ())
+				{
+					Console.WriteLine (o.Debitor.Name);
+				}
+
+//				Console.WriteLine ("GetDebitorId: "+ C5.Helpers.GetDebitorId ());
+//
+//				C5.Debitor debitor = new C5.Debitor ();
+//				debitor.Name = "Rasmus Pedersen";
+//				debitor.Address1 = "Agersøvej 303";
+//				debitor.PostCode = "4200";
+//				debitor.City = "Slagelse";
+//				debitor.Save ();
 
 
 //				C5.Debitor debitor = C5.Debitor.Load ("1200380");

@@ -7,7 +7,7 @@ namespace C5
 {
 	public class Debitor
 	{
-		string _accountid;
+		string _id;
 
 		string _name;
 
@@ -26,11 +26,11 @@ namespace C5
 
 		string _vatno;
 
-		public string AccountId
+		public string Id
 		{
 			get
 			{
-				return this._accountid;
+				return this._id;
 			}
 		}
 
@@ -193,7 +193,7 @@ namespace C5
 
 		public Debitor ()
 		{
-			this._accountid = string.Empty;
+			this._id = string.Empty;
 
 			this._name = string.Empty;
 
@@ -215,10 +215,10 @@ namespace C5
 
 		public void Save ()
 		{
-			if (this._accountid == string.Empty)
+			if (this._id == string.Empty)
 			{
-				int sequencenumber = C5.Helpers.GetSequenceNumber ();
-				string id = C5.Helpers.GetDebitorId ();
+				int sequencenumber = C5.Helpers.NewSequenceNumber ();
+				string id = C5.Helpers.NewDebitorId ();
 
 				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Insert);
 				qb.Table ("debkart");
@@ -381,7 +381,7 @@ namespace C5
 				query = null;
 				qb = null;
 
-				this._accountid = id;
+				this._id = id;
 			}
 
 			{
@@ -404,9 +404,9 @@ namespace C5
 						this._address2,
 						this._postcode +" "+ this._city,
 						this._country
-						);
+					);
 
-				qb.AddWhere ("konto like '%"+ this._accountid +"'");
+				qb.AddWhere ("konto like '%"+ this._id +"'");
 
 				Query query = Runtime.DBConnection.Query (qb.QueryString);
 
@@ -421,7 +421,7 @@ namespace C5
 			}
 		}
 
-		public static Debitor Load (string AccountId)
+		public static Debitor Load (string Id)
 		{
 			Debitor result = new Debitor ();
 
@@ -442,7 +442,7 @@ namespace C5
 					"momsnummer"
 				);
 			
-			qb.AddWhere ("konto like '%"+ AccountId +"'");
+			qb.AddWhere ("konto like '%"+ Id +"'");
 			
 			Query query = Runtime.DBConnection.Query (qb.QueryString);
 			
@@ -450,7 +450,7 @@ namespace C5
 			{
 				if (query.NextRow ())
 				{
-					result._accountid = AccountId;
+					result._id = Id;
 					result._name = query.GetString (qb.ColumnPos ("navn"));
 					result._address1 = query.GetString (qb.ColumnPos ("adresse1"));
 					result._address2 = query.GetString (qb.ColumnPos ("adresse2"));
