@@ -1,6 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Test" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Test/Main.cs">
+  <MonoDevelop.Ide.Workbench>
     <Files>
       <File FileName="Test/Main.cs" Line="40" Column="42" />
       <File FileName="C5/C5/Order.cs" Line="9" Column="3" />
