@@ -484,6 +484,32 @@ namespace C5
 			return result;
 		}
 
+		public static void Delete (string Id)
+		{
+			bool success = false;
+			
+			QueryBuilder qb = new QueryBuilder (QueryBuilderType.Delete);
+			qb.Table ("debkart");
+			
+			qb.AddWhere ("konto like '%"+ Id +"'");
+			
+			Query query = Runtime.DBConnection.Query (qb.QueryString);
+			
+			if (query.AffectedRows > 0) 
+			{
+				success = true;
+			}
+			
+			query.Dispose ();
+			query = null;
+			qb = null;
+			
+			if (!success) 
+			{
+				throw new Exception ("COULD NOT DELETE DEBITOR");
+			}
+		}
+
 		public static List<Debitor> List ()
 		{
 			List<Debitor> result = new List<Debitor> ();

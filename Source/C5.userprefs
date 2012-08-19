@@ -1,23 +1,25 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Test" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="C5/C5/Debitor.cs">
     <Files>
-      <File FileName="Test/Main.cs" Line="40" Column="42" />
+      <File FileName="Test/Main.cs" Line="44" Column="1" />
       <File FileName="C5/C5/Order.cs" Line="9" Column="3" />
       <File FileName="C5/C5/InvoiceLine.cs" Line="69" Column="3" />
-      <File FileName="C5/C5/Debitor.cs" Line="515" Column="4" />
+      <File FileName="C5/C5/Debitor.cs" Line="509" Column="51" />
       <File FileName="C5/C5/Helpers.cs" Line="9" Column="24" />
+      <File FileName="C5/C5/Runtime.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="C5" expanded="True">
-            <Node name="C5" expanded="True" />
+            <Node name="C5" expanded="True">
+              <Node name="Debitor.cs" selected="True" />
+            </Node>
             <Node name="C5.Enums" expanded="True" />
           </Node>
           <Node name="Test" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="Main.cs" selected="True" />
           </Node>
         </State>
       </Pad>
