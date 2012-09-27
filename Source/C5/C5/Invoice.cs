@@ -179,7 +179,7 @@ namespace C5
 		{
 			Invoice result = new Invoice ();
 			
-			#region GET JOURNAL
+			// GET JOURNAL
 			{
 				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Select);
 				qb.Table ("debjournal");
@@ -214,9 +214,8 @@ namespace C5
 				query = null;
 				qb = null;
 			}
-			#endregion
 
-			#region GET ORDKARTARKIV
+			// GET ORDKARTARKIV
 			{
 				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Select);
 				qb.Table ("ordkartarkiv");
@@ -251,9 +250,8 @@ namespace C5
 				query = null;
 				qb = null;
 			}
-			#endregion
 			
-			#region GET DEBPOST
+			// GET DEBPOST
 			{
 				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Select);
 				qb.Table ("debpost");
@@ -284,9 +282,8 @@ namespace C5
 				query = null;
 				qb = null;
 			}
-			#endregion
 			
-			#region GET ORDLINEARKIV
+			// GET ORDLINEARKIV
 			{
 				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Select);
 				qb.Table ("ordliniearkiv");
@@ -322,7 +319,7 @@ namespace C5
 						line._text = query.GetString (qb.ColumnPos ("tekst"));
 						line._sequenceno = query.GetInt (qb.ColumnPos ("lxbenummer"));
 							
-						#region GET NOTAT
+						// GET NOTAT
 						{
 							QueryBuilder qb2 = new QueryBuilder (QueryBuilderType.Select);
 							qb2.Table ("notat");
@@ -345,7 +342,6 @@ namespace C5
 							query2 = null;
 							qb2 = null;
 						}
-						#endregion
 						
 						result._lines.Add (line);
 					}
@@ -355,7 +351,6 @@ namespace C5
 				query = null;
 				qb = null;
 			}
-			#endregion
 			
 			return result;
 		}

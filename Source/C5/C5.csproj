@@ -50,6 +50,7 @@
     <Compile Include="C5.Enums\InvoiceType.cs" />
     <Compile Include="C5\Order.cs" />
     <Compile Include="C5\Debitor.cs" />
+    <Compile Include="C5\Product.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

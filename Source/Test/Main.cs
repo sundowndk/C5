@@ -17,10 +17,21 @@ namespace Test
 
 			bool testdebitor = false;
 			bool testinvoice = false;
-			bool testorder = true;
+			bool testorder = false;
+			bool testproduct = true;
 
+			if (testproduct)
+			{
+//				C5.Product p1 = C5.Product.Load ("516");
 
+//				Console.WriteLine (p1.Name);
+//				Console.WriteLine (p1.Price);
 
+				foreach (C5.Product p in C5.Product.List ())
+				{
+					Console.WriteLine (p.Name +" = "+ p.Price);
+				}
+			}
 
 			if (testorder)
 			{
