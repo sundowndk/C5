@@ -11,11 +11,9 @@
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True">
+        <State expanded="True" selected="True">
           <Node name="C5" expanded="True">
-            <Node name="C5" expanded="True">
-              <Node name="Product.cs" selected="True" />
-            </Node>
+            <Node name="C5" expanded="True" />
             <Node name="C5.Enums" expanded="True" />
           </Node>
           <Node name="Test" expanded="True">
