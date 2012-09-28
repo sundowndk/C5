@@ -17,8 +17,8 @@ namespace Test
 
 			bool testdebitor = false;
 			bool testinvoice = false;
-			bool testorder = false;
-			bool testproduct = true;
+			bool testorder = true;
+			bool testproduct = false;
 
 			if (testproduct)
 			{
@@ -35,14 +35,22 @@ namespace Test
 
 			if (testorder)
 			{
+				Debitor d1 = Debitor.Load ("1200470");
+
+
+				Order o1 = new Order (d1);
+
+				o1.Save ();
+				Console.WriteLine ("Order id:"+ o1.Id);
+
 //				C5.Order o1 = C5.Order.Load ("11163");
 
 //				Console.WriteLine (o1.Debitor.Name);
 
-				foreach (Order o in C5.Order.List ())
-				{
-					Console.WriteLine (o.Debitor.Name);
-				}
+//				foreach (Order o in C5.Order.List ())
+//				{
+//					Console.WriteLine (o.Debitor.Name);
+//				}
 
 //				Console.WriteLine ("GetDebitorId: "+ C5.Helpers.GetDebitorId ());
 //

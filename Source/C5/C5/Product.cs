@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 using SNDK.DBI;
 
+using System.Xml;
+using System.Collections;
 namespace C5
 {
 	public class Product
@@ -103,7 +105,18 @@ namespace C5
 			
 			return result;
 		}
-		
+
+		public XmlDocument ToXmlDocument ()
+		{
+			Hashtable result = new Hashtable ();
+			
+			result.Add ("id", this._id);
+			result.Add ("name", this._name);
+			result.Add ("price", this._price);
+			
+			return SNDK.Convert.ToXmlDocument (result, this.GetType ().FullName.ToLower ());
+		}
+
 		public static List<Product> List ()
 		{
 			List<Product> result = new List<Product> ();

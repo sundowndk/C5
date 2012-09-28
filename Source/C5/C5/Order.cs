@@ -10,6 +10,8 @@ namespace C5
 		string _id;
 		C5.Debitor _debitor;
 
+		List<OrderLine> _orderlines;
+
 		public string Id
 		{
 			get
@@ -23,6 +25,14 @@ namespace C5
 			get
 			{
 				return this._debitor;
+			}
+		}
+
+		public List<OrderLine> OrderLines
+		{
+			get
+			{
+				return this._orderlines;
 			}
 		}
 
@@ -43,7 +53,7 @@ namespace C5
 			if (this._id == string.Empty)
 			{
 				int sequencenumber = C5.Helpers.NewSequenceNumber ();
-				string id = C5.Helpers.NewOrderId ();
+				this._id = C5.Helpers.NewOrderId ();
 
 				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Insert);
 				qb.Table ("ordkart");
@@ -100,12 +110,12 @@ namespace C5
 						"gebyrfm",
 						"afrunding",
 						"momsbelxb",
-						"afgifem",
+						"afgiftem",
 						"gebyrem",
 						"fakturatotal",
 						"liniemoms",
 						"transaktion",
-						"sletstatestik",
+						"sletstatistik",
 						"slettransport",
 						"godkendt",
 						"lagerstatus",
@@ -120,7 +130,7 @@ namespace C5
 						"transkode",
 						"enummer",
 						"email",
-						"levmail",
+						"levemail",
 						"betalingsid"
 					);
 
@@ -128,12 +138,12 @@ namespace C5
 					(
 						"DAT", // dataset
 						sequencenumber, // lxbenummer
-						"2012-01-01 00:00:00:000", // sidstrettet
+						"1900-01-01 00:00:00.000", // sidstrettet
 						0, // lxs
 						this._id.PadLeft (10, ' '), // nummer
 						"Webordre #"+ this._id, // sxgenavn
-						"2012-01-01 00:00:00:000", // oprettet
-						"2012-01-01 00:00:00:000", // leveres 
+						"1900-01-01 00:00:00.000", // oprettet
+						"1900-01-01 00:00:00.000", // leveres 
 						string.Empty, // konto
 						string.Empty, // navn
 						string.Empty, // adresse1
@@ -151,11 +161,11 @@ namespace C5
 						string.Empty, // kasserabat
 						"DKK", // valuta
 						0, // sprog
-						string.Empty, // betaling *
+						string.Empty, // betaling 
 						string.Empty, // levering
 						0, // spxrret
 						string.Empty, //sxlger
-						string.Empty, // moms *
+						string.Empty, // moms
 						0, // beholdning
 						string.Empty, // afdeling
 						string.Empty, // gironummer
@@ -173,7 +183,7 @@ namespace C5
 						0, // momsberegnet
 						0, // rabat
 						0, // afgiftfm
-						0, // gebyrfm *GEBYG 35
+						0, // gebyrfm
 						0, // afrunding
 						0, // momsbelxb
 						0, // afgiftem
@@ -210,11 +220,15 @@ namespace C5
 				query.Dispose ();
 				query = null;
 				qb = null;
-				
-				this._id = id;
 			}
 
 			{
+				int gebyrfm = 0;
+				if (this._debitor.Url == string.Empty)
+				{
+					gebyrfm = 30;
+				}
+
 				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Update);
 				qb.Table ("ordkart");
 				
@@ -229,11 +243,12 @@ namespace C5
 						"attention",
 						"telefon",
 						"telefax",
+						"email",
 						"fakturakonto",
 						"betaling",
-						"moms",
 						"momsnummer",
-						"email"
+						"moms",
+						"gebyrfm"
 					);
 				
 				qb.Values
@@ -247,11 +262,12 @@ namespace C5
 						this._debitor.Attention,
 						this._debitor.Phone,
 						this._debitor.Fax,
+						this._debitor.Email,
 						this._debitor.Id.PadLeft (10, ' '),
-						string.Empty, // FIX
-						string.Empty, // FIX
+						this._debitor.CreditPolicy,
+						this._debitor.VatCode,
 						this._debitor.VatNo,
-						this._debitor.Email
+						gebyrfm
 					);
 				
 				qb.AddWhere ("nummer like '%"+ this._id +"'");
@@ -260,7 +276,7 @@ namespace C5
 				
 				if (query.AffectedRows == 0) 
 				{
-					throw new Exception ("COULD NOT CREATE NEW ORDER");
+					throw new Exception ("COULD NOT UPDATE NEW ORDER");
 				}
 				
 				query.Dispose ();

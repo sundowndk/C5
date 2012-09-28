@@ -1,19 +1,19 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="C5/C5/Product.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Test" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="C5/C5/Order.cs">
     <Files>
-      <File FileName="Test/Main.cs" Line="32" Column="49" />
-      <File FileName="C5/C5/Product.cs" Line="109" Column="48" />
-      <File FileName="C5/C5/Order.cs" Line="291" Column="22" />
-      <File FileName="C5/C5/Invoice.cs" Line="134" Column="1" />
-      <File FileName="C5/C5/Helpers.cs" Line="9" Column="24" />
-      <File FileName="C5/C5/Debitor.cs" Line="445" Column="43" />
+      <File FileName="C5/C5/Order.cs" Line="28" Column="5" />
+      <File FileName="Test/Main.cs" Line="44" Column="44" />
+      <File FileName="C5/C5/Debitor.cs" Line="430" Column="19" />
+      <File FileName="C5/C5/OrderLine.cs" Line="32" Column="4" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True" selected="True">
+        <State expanded="True">
           <Node name="C5" expanded="True">
-            <Node name="C5" expanded="True" />
+            <Node name="C5" expanded="True">
+              <Node name="Order.cs" selected="True" />
+            </Node>
             <Node name="C5.Enums" expanded="True" />
           </Node>
           <Node name="Test" expanded="True">

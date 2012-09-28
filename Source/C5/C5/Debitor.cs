@@ -24,7 +24,10 @@ namespace C5
 		string _email;
 		string _url;
 
+		string _creditpolicy;
+
 		string _vatno;
+		string _vatcode;
 
 		public string Id
 		{
@@ -178,6 +181,19 @@ namespace C5
 			}
 		}
 
+		public string CreditPolicy
+		{
+			get
+			{
+				return this._creditpolicy;
+			}
+
+			set
+			{
+				this._creditpolicy = value;
+			}
+		}
+
 		public string VatNo
 		{
 			get
@@ -188,6 +204,19 @@ namespace C5
 			set
 			{
 				this._vatno = value;
+			}
+		}
+
+		public string VatCode
+		{
+			get
+			{
+				return this._vatcode;
+			}
+
+			set
+			{
+				this._vatcode = value;
 			}
 		}
 
@@ -210,7 +239,10 @@ namespace C5
 			this._email = string.Empty;
 			this._url = string.Empty;
 
+			this._creditpolicy = string.Empty;
+
 			this._vatno = string.Empty;
+			this._vatcode = "U25";
 		}
 
 		public void Save ()
@@ -390,11 +422,19 @@ namespace C5
 				
 				qb.Columns 	
 					(
-						"NAVN",
-						"ADRESSE1",
-						"ADRESSE2",
-						"POSTBY",
-						"LAND"
+						"navn",
+						"adresse1",
+						"adresse2",
+						"postby",
+						"land",
+						"attention",
+						"telefon",
+						"telefax",
+						"email",
+						"url",
+						"betaling",
+						"momsnummer",
+						"moms"
 					);
 
 				qb.Values
@@ -403,7 +443,16 @@ namespace C5
 						this._address1,
 						this._address2,
 						this._postcode +" "+ this._city,
-						this._country
+						this._country,
+						this._attention,
+						this._phone,
+						this._fax,
+						this._email,
+						this._url,
+						this._creditpolicy,
+						this._vatno,
+						this._vatcode
+
 					);
 
 				qb.AddWhere ("konto like '%"+ this._id +"'");
@@ -439,7 +488,9 @@ namespace C5
 					"telefax",
 					"email",
 					"url",
-					"momsnummer"
+					"betaling",
+					"momsnummer",
+					"moms"
 				);
 			
 			qb.AddWhere ("konto like '%"+ Id +"'");
@@ -473,7 +524,10 @@ namespace C5
 					result._email = query.GetString (qb.ColumnPos ("email"));
 					result._url = query.GetString (qb.ColumnPos ("url"));
 
+					result._creditpolicy = query.GetString (qb.ColumnPos ("betaling"));
+
 					result._vatno = query.GetString (qb.ColumnPos ("momsnummer"));
+					result._vatcode = query.GetString (qb.ColumnPos ("moms"));
 				}
 			}
 			
