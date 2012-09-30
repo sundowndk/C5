@@ -7,7 +7,10 @@ namespace C5
 {
 	public class Debitor
 	{
+		#region Private Fields
 		string _id;
+
+		int _updatetimestamp;
 
 		string _name;
 
@@ -28,12 +31,26 @@ namespace C5
 
 		string _vatno;
 		string _vatcode;
+		#endregion
 
+		#region Temp Fields
+		bool _temp1 = true; // Fales if object has been saved. True if object has not yet been saved.
+		#endregion
+
+		#region Public Fields
 		public string Id
 		{
 			get
 			{
 				return this._id;
+			}
+		}
+
+		public int UpdateTimestamp
+		{
+			get
+			{
+				return this._updatetimestamp;
 			}
 		}
 
@@ -219,10 +236,14 @@ namespace C5
 				this._vatcode = value;
 			}
 		}
+		#endregion
 
+		#region Constructor
 		public Debitor ()
 		{
-			this._id = string.Empty;
+			this._id = C5.Helpers.NewDebitorId ();
+
+			this._updatetimestamp = SNDK.Date.CurrentDateTimeToTimestamp ();
 
 			this._name = string.Empty;
 
@@ -244,13 +265,16 @@ namespace C5
 			this._vatno = string.Empty;
 			this._vatcode = "U25";
 		}
+		#endregion
 
+		#region Public Methods
 		public void Save ()
 		{
-			if (this._id == string.Empty)
+			// If Debitor has not yet been saved, we need to insert a new record.
+			// TEMP1
+			if (this._temp1)
 			{
 				int sequencenumber = C5.Helpers.NewSequenceNumber ();
-				string id = C5.Helpers.NewDebitorId ();
 
 				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Insert);
 				qb.Table ("debkart");
@@ -262,160 +286,141 @@ namespace C5
 						"sidstrettet",
 						"lxs",
 						"konto",
-
-						"NAVN",
-						"ADRESSE1",
-						"ADRESSE2",
-						"POSTBY",
-						"LAND",
-
-						"ATTENTION",
-						"TELEFON",
-						"TELEFAX",
-						"FAKTURAKONTO",
-						"GRUPPE",
-
-						"FASTRABAT",
-						"GODKENDT",
-						"PRISGRUPPE",
+						"navn",
+						"adresse1",
+						"adresse2",
+						"postby",
+						"land",
+						"attention",
+						"telefon",
+						"telefax",
+						"fakturakonto",
+						"gruppe",
+						"fastrabat",
+						"godkendt",
+						"prisgruppe",
 						"rabatgruppe",
-						"KASSERABAT",
-						"BILLEDE",
-
-						"VALUTA",
-						"SPROG",
-						"BETALING",
-						"LEVERING",
-						"SPXRRET",
-
-						"SXLGER",
-						"MOMS",
-						"SLETSTATISTIK",
-						"GIRONUMMER",
-						"MOMSNUMMER",
-
-						"RENTE",
-						"AFDELING",
-						"RYKKERKODE",
-						"ENGANGSKUNDE",
-						"BEHOLDNING",
-
-						"EDIADRESSE",
-						"SALDO",
-						"SALDO30",
-						"SALDO60",
-						"SALDO90",
-
-						"SALDO120",
-						"SALDOOVER120",
-						"FORFALDEN",
-						"BEREGNET",
-						"SALDOMAX",
-
-						"SALDODKK",
-						"SXGENAVN",
-						"SLETTRANSPORT",
-						"KONTANT",
-						"INDBETALMXDE",
-
-						"ORDREGRUPPE",
-						"PROJEKTGRUPPE",
-						"HANDELSKODE",
-						"TRANSKODE",
-						"EMAIL",
-
-						"URL",
-						"MOBIL",
-						"KRAKNR"
+						"kasserabat",
+						"billede",
+						"valuta",
+						"sprog",
+						"betaling",
+						"levering",
+						"spxrret",
+						"sxlger",
+						"moms",
+						"sletstatistik",
+						"gironummer",
+						"momsnummer",
+						"rente",
+						"afdeling",
+						"rykkerkode",
+						"engangskunde",
+						"beholdning",
+						"ediadresse",
+						"saldo",
+						"saldo30",
+						"saldo60",
+						"saldo90",
+						"saldo120",
+						"saldoover120",
+						"forfalden",
+						"beregnet",
+						"saldomax",
+						"saldoddk",
+						"sxgenavn",
+						"slettransport",
+						"kontakt",
+						"indbetalmxde",
+						"ordregruppe",
+						"projektgruppe",
+						"handelskode",
+						"transkode",
+						"email",
+						"url",
+						"mobil",
+						"kraknr"
 						);
 				qb.Values
 					(
-						"DAT",
-						sequencenumber,
-						string.Empty,
-						0,
-						id.PadLeft (10, ' '),
-
-						string.Empty,
-						string.Empty,
-						string.Empty,
-						string.Empty,
-						string.Empty,
-
-						string.Empty,
-						string.Empty,
-						string.Empty,
-						string.Empty,
-						string.Empty,
-
-						0,
-						0,
-						string.Empty,
-						string.Empty,
-						string.Empty,
-						string.Empty,
-
-						"DKK",
-						0,
-						string.Empty,
-						string.Empty,
-						0,
-
-						string.Empty,
-						string.Empty,
-						0,
-						string.Empty,
-						string.Empty,
-
-						string.Empty,
-						string.Empty,
-						0,
-						0,
-						0,
-
-						string.Empty,
-						0,
-						0,
-						0,
-						0,
-
-						0,
-						0,
-						0,
-						"2012-01-01 00:00:00.000",
-						0,
-
-						0,
-						string.Empty,
-						0,
-						0,
-						string.Empty,
-
-						string.Empty,
-						0,
-						0,
-						string.Empty,
-						string.Empty,
-
-						string.Empty,
-						string.Empty,
-						string.Empty
+						"DAT", // dataset
+						sequencenumber, // lxbenummer
+						String.Format ("{0:yyyy-MM-dd} 00:00:00.000", SNDK.Date.TimestampToDateTime (this._updatetimestamp)), // sidstrettet
+						0, // lxs
+						this._id.PadLeft (10, ' '), // konto
+						this._name, // navn
+						this._address1, // adresse1
+						this._address2, // address2
+						this._postcode +" "+ this._city, // postby
+						this._country, // land
+						this._attention, // attention
+						this._phone, // telefon
+						this._fax, // fax
+ 						string.Empty, // fakturakonto
+						string.Empty, // gruppe
+						0, // fastrabat
+						0, // godkendt
+						string.Empty, // prisgruppe
+						string.Empty, // rabatgruppe
+						string.Empty, // kasserabat
+						string.Empty, // billede
+						"DKK", // valuta
+						0, // sprog
+						this._creditpolicy, // betaling
+						string.Empty, // levering
+						0, // spxrret
+						string.Empty, // sxlger
+						this._vatcode, // moms
+						0, // sletstatistik
+						string.Empty, // gironummer
+						this._vatno, // momsnummer
+						string.Empty, // rente
+						string.Empty, // afdeling
+						0, // rykkerkode
+						0, // engangskunde
+						0, // beholdning
+						string.Empty, // ediadresse
+						0, // saldo
+						0, // saldo30
+						0, // saldo60
+						0, // saldo90
+						0, // saldo120
+						0, // saldoover120
+						0, // forfalden
+						"1900-01-01 00:00:00.000", // beregnet
+						0, // saldomax
+						0, // saldoddk
+						string.Empty, // sxgenavn
+						0, // slettransport
+						0, // kontakt
+						string.Empty, // indbetalmxde
+						string.Empty, // ordregruppe
+						0, // projektgruppe
+						0, // handelskode
+						string.Empty, // transkode
+						this._email, // email
+						string.Empty, // url
+						string.Empty, // mobil
+						string.Empty // kraknr
 					);
 
 				Query query = Runtime.DBConnection.Query (qb.QueryString);
 
 				if (query.AffectedRows == 0) 
 				{
-					throw new Exception ("COULD NOT CREATE NEW DEBITOR");
+					// Exception: DebitorSave
+					throw new Exception (string.Format (Strings.Exception.DebitorSave, this._id));
 				}
 							
 				query.Dispose ();
 				query = null;
 				qb = null;
 
-				this._id = id;
+				// TEMP1
+				this._temp1 = false;
 			}
-
+			// If OrderLine has allready been saved before we only need to update the record.
+			else
 			{
 				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Update);
 				qb.Table ("debkart");
@@ -439,20 +444,19 @@ namespace C5
 
 				qb.Values
 					(
-						this._name,
-						this._address1,
-						this._address2,
-						this._postcode +" "+ this._city,
-						this._country,
-						this._attention,
-						this._phone,
-						this._fax,
-						this._email,
-						this._url,
-						this._creditpolicy,
-						this._vatno,
-						this._vatcode
-
+						this._name, // navn
+						this._address1, // adresse1
+						this._address2, // address2
+						this._postcode +" "+ this._city, // postby
+						this._country, // land
+						this._attention, // attention
+						this._phone, // telefon
+						this._fax, // fax
+						this._email, // email
+						this._url, // url
+						this._creditpolicy, // betaling
+						this._vatno, // momsnummer
+						this._vatcode // moms
 					);
 
 				qb.AddWhere ("konto like '%"+ this._id +"'");
@@ -461,7 +465,8 @@ namespace C5
 
 				if (query.AffectedRows == 0) 
 				{
-					throw new Exception ("COULD NOT CREATE NEW DEBITOR");
+					// Exception: DebitorSave
+					throw new Exception (string.Format (Strings.Exception.DebitorSave, this._id));
 				}
 				
 				query.Dispose ();
@@ -469,15 +474,19 @@ namespace C5
 				qb = null;
 			}
 		}
+		#endregion
 
+		#region Public Static Methods
 		public static Debitor Load (string Id)
 		{
+			bool success = true;
 			Debitor result = new Debitor ();
 
 			QueryBuilder qb = new QueryBuilder (QueryBuilderType.Select);
 			qb.Table ("debkart");
 			qb.Columns 
 				(
+					"sidstrettet",
 					"navn",
 					"adresse1",
 					"adresse2",
@@ -502,6 +511,7 @@ namespace C5
 				if (query.NextRow ())
 				{
 					result._id = Id;
+					result._updatetimestamp = SNDK.Date.DateTimeToTimestamp (query.GetDateTime (qb.ColumnPos ("sidstrettet")));
 					result._name = query.GetString (qb.ColumnPos ("navn"));
 					result._address1 = query.GetString (qb.ColumnPos ("adresse1"));
 					result._address2 = query.GetString (qb.ColumnPos ("adresse2"));
@@ -513,7 +523,9 @@ namespace C5
 						result._city = postby.Split (" ".ToCharArray (), StringSplitOptions.RemoveEmptyEntries)[1];
 					}
 					catch
-					{}
+					{
+						// This will catch empty postcode or city.
+					}
 
 					result._country = query.GetString (qb.ColumnPos ("land"));
 
@@ -535,12 +547,34 @@ namespace C5
 			query = null;
 			qb = null;
 
+			if (!success)
+			{
+				// Exception: DebitorLoadId
+				throw new Exception (string.Format (Strings.Exception.DebitorLoadId, Id));
+			}
+
+			// TEMP1
+			result._temp1 = false;
+
 			return result;
 		}
 
 		public static void Delete (string Id)
 		{
 			bool success = false;
+
+			try
+			{
+				foreach (Order order in Order.List (Debitor.Load (Id)))
+				{
+					Order.Delete (order.Id);
+				}
+			}
+			catch
+			{
+				// Exception: DebitorDeleteId
+				throw new Exception (string.Format (Strings.Exception.DebitorDeleteOrder, Id));
+			}
 			
 			QueryBuilder qb = new QueryBuilder (QueryBuilderType.Delete);
 			qb.Table ("debkart");
@@ -560,7 +594,8 @@ namespace C5
 			
 			if (!success) 
 			{
-				throw new Exception ("COULD NOT DELETE DEBITOR");
+				// Exception: DebitorDeleteId
+				throw new Exception (string.Format (Strings.Exception.DebitorDeleteId, Id));
 			}
 		}
 
@@ -582,7 +617,8 @@ namespace C5
 						result.Add (Load (query.GetString (qb.ColumnPos ("konto")).Replace (" ", "")));
 					}
 					catch
-					{					
+					{	
+						// This will catch load exceptions while adding debitors to the list. That way corrupt debitors will be ommited.
 					}
 				}
 			}
@@ -593,7 +629,7 @@ namespace C5
 			
 			return result;
 		}
-
+		#endregion
 	}
 }
 

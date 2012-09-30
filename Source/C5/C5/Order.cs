@@ -7,16 +7,76 @@ namespace C5
 {
 	public class Order
 	{
+		#region Private Fields
 		string _id;
+
+		int _createtimestamp;
+		int _updatetimestamp;
+
 		C5.Debitor _debitor;
 
 		List<OrderLine> _orderlines;
+		#endregion
 
+		#region Temp Fields
+		string _temp1 = string.Empty; // Holds OrderLine ids that needs to be deleted.
+		bool _temp2 = true; // Fales if object has been saved. True if object has not yet been saved.
+		#endregion
+
+		#region Public Fields
 		public string Id
 		{
 			get
 			{
 				return this._id;
+			}
+		}
+
+		public int CreateTimestamp
+		{
+			get
+			{
+				return this._createtimestamp;
+			}
+		}
+
+		public int UpdateTimestamp
+		{
+			get
+			{
+				return this._updatetimestamp;
+			}
+		}
+
+		public bool Invoiced
+		{
+			get
+			{
+				bool result = false;
+
+				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Select);
+				qb.Table ("ordkartarkiv");
+				qb.Columns 
+					(
+						"lxbenummer"
+						);
+				
+				qb.AddWhere ("nummer like '%"+ this._id +"'");
+				
+				Query query = Runtime.DBConnection.Query (qb.QueryString);
+				if (query.Success)
+				{
+					if (query.NextRow ())
+					{
+						result = true;
+					}
+				}
+				
+				query.Dispose ();
+				query = null;
+				qb = null;
+
+				return result;
 			}
 		}
 
@@ -28,32 +88,56 @@ namespace C5
 			}
 		}
 
-		public List<OrderLine> OrderLines
+		public IList<OrderLine> OrderLines
 		{
 			get
 			{
-				return this._orderlines;
+				return this._orderlines.AsReadOnly ();
 			}
 		}
+		#endregion
 
+		#region Constructor
 		public Order (Debitor Debitor)
 		{
-			this._id = string.Empty;
+			this._id = C5.Helpers.NewOrderId ();
+
+			this._createtimestamp = SNDK.Date.CurrentDateTimeToTimestamp ();
+			this._updatetimestamp = SNDK.Date.CurrentDateTimeToTimestamp ();
+
 			this._debitor = Debitor;
+
+			this._orderlines = new List<OrderLine> ();		
 		}
 
-		public Order ()
+		private Order ()
 		{
 			this._id = string.Empty;
-			this._debitor = null;
-		}
 
+			this._createtimestamp = 0;
+			this._updatetimestamp = 0;
+
+			this._debitor = null;
+
+			this._orderlines = new List<OrderLine> ();
+		}
+		#endregion
+
+		#region Public Methods
 		public void Save ()
 		{
-			if (this._id == string.Empty)
+			// TODO: This should be fixed.
+			int gebyrfm = 0;
+			if (this._debitor.Url == string.Empty)
+			{
+				gebyrfm = 30;
+			}
+
+			// If Order has not yet been saved, we need to insert a new record.
+			// TEMP2
+			if (this._temp2)
 			{
 				int sequencenumber = C5.Helpers.NewSequenceNumber ();
-				this._id = C5.Helpers.NewOrderId ();
 
 				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Insert);
 				qb.Table ("ordkart");
@@ -138,22 +222,22 @@ namespace C5
 					(
 						"DAT", // dataset
 						sequencenumber, // lxbenummer
-						"1900-01-01 00:00:00.000", // sidstrettet
+						String.Format ("{0:yyyy-MM-dd} 00:00:00.000", SNDK.Date.TimestampToDateTime (this._updatetimestamp)), // sidstrettet
 						0, // lxs
 						this._id.PadLeft (10, ' '), // nummer
 						"Webordre #"+ this._id, // sxgenavn
-						"1900-01-01 00:00:00.000", // oprettet
-						"1900-01-01 00:00:00.000", // leveres 
-						string.Empty, // konto
-						string.Empty, // navn
-						string.Empty, // adresse1
-						string.Empty, // adresse2
-						string.Empty, // postby
-						string.Empty, // land
-						string.Empty, // attention
-						string.Empty, // telefon
-						string.Empty, // telefax
-						string.Empty, // fakturakonto
+						String.Format ("{0:yyyy-MM-dd} 00:00:00.000", SNDK.Date.TimestampToDateTime (this._createtimestamp)), // oprettet
+						String.Format ("{0:yyyy-MM-dd} 00:00:00.000", SNDK.Date.TimestampToDateTime (this._createtimestamp)), // leveres
+						this._debitor.Id.PadLeft (10, ' '), // konto
+						this._debitor.Name, // navn
+						this._debitor.Address1, // address1
+						this._debitor.Address2, // address2
+						this._debitor.PostCode +" "+ this._debitor.City, // postby
+						this._debitor.Country, // land
+						this._debitor.Attention, // attention
+						this._debitor.Phone, // telefon
+						this._debitor.Fax, // telefax
+						this._debitor.Id.PadLeft (10, ' '), // fakturakonto
 						string.Empty, // gruppe
 						0, // fastrabat
 						"Salg", // prisgruppe
@@ -161,15 +245,15 @@ namespace C5
 						string.Empty, // kasserabat
 						"DKK", // valuta
 						0, // sprog
-						string.Empty, // betaling 
+						this._debitor.CreditPolicy, // betaling
 						string.Empty, // levering
 						0, // spxrret
 						string.Empty, //sxlger
-						string.Empty, // moms
+						this._debitor.VatCode, // moms
 						0, // beholdning
 						string.Empty, // afdeling
 						string.Empty, // gironummer
-						string.Empty, // momsnummer
+						this._debitor.VatNo, // momsnummer
 						string.Empty, // billede
 						string.Empty, // levering1
 						string.Empty, // levering2
@@ -183,7 +267,7 @@ namespace C5
 						0, // momsberegnet
 						0, // rabat
 						0, // afgiftfm
-						0, // gebyrfm
+						gebyrfm, // gebyrfm
 						0, // afrunding
 						0, // momsbelxb
 						0, // afgiftem
@@ -196,7 +280,7 @@ namespace C5
 						1, // godkendt
 						2, // lagerstatus
 						string.Empty, // fakturafxlgeseddel
-						"1900-01-01 00:00:00.000", // fakturafxlgeseddeldato
+						String.Format ("{0:yyyy-MM-dd} 00:00:00.000", SNDK.Date.TimestampToDateTime (this._createtimestamp)), // fakturafxlgeseddeldato
 						0, // kontant
 						0, // listekode
 						0, // linierabat
@@ -205,35 +289,35 @@ namespace C5
 						string.Empty, // handelskode
 						string.Empty, // transkode
 						string.Empty, // enummer
-						string.Empty, // email
+						this._debitor.Email, // email
 						string.Empty, // levmail
 						string.Empty // betalingstid
 					);
 
 				Query query = Runtime.DBConnection.Query (qb.QueryString);
-				
+
 				if (query.AffectedRows == 0) 
 				{
-					throw new Exception ("COULD NOT CREATE NEW ORDER");
+					// Exception: OrderSave
+					throw new Exception (string.Format (Strings.Exception.OrderSave, this._id));
 				}
 				
 				query.Dispose ();
 				query = null;
 				qb = null;
+
+				// TEMP2
+				this._temp2 = false;
 			}
-
+			// If OrderLine has allready been saved before we only need to update the record.
+			else
 			{
-				int gebyrfm = 0;
-				if (this._debitor.Url == string.Empty)
-				{
-					gebyrfm = 30;
-				}
-
 				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Update);
 				qb.Table ("ordkart");
 				
 				qb.Columns 	
 					(
+						"sidstrettet",					
 						"konto",
 						"navn",
 						"adresse1",
@@ -253,21 +337,22 @@ namespace C5
 				
 				qb.Values
 					(
-						this._debitor.Id.PadLeft (10, ' '),
-						this._debitor.Name,
-						this._debitor.Address1,
-						this._debitor.Address2,
-						this._debitor.PostCode +" "+ this._debitor.City,
-						this._debitor.Country,
-						this._debitor.Attention,
-						this._debitor.Phone,
-						this._debitor.Fax,
-						this._debitor.Email,
-						this._debitor.Id.PadLeft (10, ' '),
-						this._debitor.CreditPolicy,
-						this._debitor.VatCode,
-						this._debitor.VatNo,
-						gebyrfm
+						String.Format ("{0:yyyy-MM-dd} 00:00:00.000", SNDK.Date.TimestampToDateTime (this._updatetimestamp)), // sidstrettet
+						this._debitor.Id.PadLeft (10, ' '), // konto
+						this._debitor.Name, // navn
+						this._debitor.Address1, // address1
+						this._debitor.Address2, // address2
+						this._debitor.PostCode +" "+ this._debitor.City, // postby
+						this._debitor.Country, // land
+						this._debitor.Attention, // attention
+						this._debitor.Phone, // telefon
+						this._debitor.Fax, // telefax
+						this._debitor.Email, // email
+						this._debitor.Id.PadLeft (10, ' '), // fakturakonto
+						this._debitor.CreditPolicy, // betaling
+						this._debitor.VatNo, // momsnummer
+						this._debitor.VatCode, // moms
+						gebyrfm // gebyrfm
 					);
 				
 				qb.AddWhere ("nummer like '%"+ this._id +"'");
@@ -276,53 +361,177 @@ namespace C5
 				
 				if (query.AffectedRows == 0) 
 				{
-					throw new Exception ("COULD NOT UPDATE NEW ORDER");
+					// Exception: OrderSave
+					throw new Exception (string.Format (Strings.Exception.OrderSave, this._id));
 				}
 				
 				query.Dispose ();
 				query = null;
 				qb = null;
 			}
+
+			// Save orderlines added.
+			foreach (OrderLine line in this._orderlines)
+			{
+				line.Save ();				
+			}
+
+			// Delete orderlines removed.
+			// TEMP1
+			foreach (string orderlineid in this._temp1.Split (";".ToCharArray (), StringSplitOptions.RemoveEmptyEntries))
+			{
+				try
+				{
+					OrderLine.Delete (orderlineid);
+				}
+				catch
+				{
+					// This will catch deletion of orderlines not yet saved.
+				}
+			}
 		}
 
+		public void AddLine (string ProductId, string Text, DateTime PeriodBegin, DateTime PeriodEnd, string Unit, decimal Amount, decimal Price, decimal Total)
+		{
+			OrderLine line = new OrderLine (this);
+
+			line.ProductId = ProductId;
+			line.Sort = this._orderlines.Count;
+			line.Text = Text;
+			line.PeriodBegin = PeriodBegin;
+			line.PeriodEnd = PeriodEnd;
+			line.Unit = Unit;
+			line.Amount = Amount;
+			line.Price = Price;
+			line.Total = Total;
+
+			this._orderlines.Add (line);
+		}
+
+		public void RemoveLine (string OrderLineId)
+		{
+			// Keep track of what orderlines to delete on save.
+			if (this._orderlines.Find (delegate (OrderLine ol) { return ol.Id == OrderLineId; }) != null)
+			{
+				// TEMP1
+				this._temp1 += ";"+ OrderLineId;
+				this._orderlines.RemoveAll (delegate (OrderLine ol) { return ol.Id == OrderLineId; });
+			}
+		}
+		#endregion
+
+		#region Public Static Methods
 		public static Order Load (string Id)
 		{
+			bool success = false;
 			Order result = new Order ();
 			
 			QueryBuilder qb = new QueryBuilder (QueryBuilderType.Select);
 			qb.Table ("ordkart");
 			qb.Columns 
 				(
+					"sidstrettet",
+					"oprettet",
 					"konto"
 				);
 			
 			qb.AddWhere ("nummer like '%"+ Id +"'");
 			
 			Query query = Runtime.DBConnection.Query (qb.QueryString);
-			
+
+
 			if (query.Success)
 			{
 				if (query.NextRow ())
 				{
 					result._id = Id;
+					result._createtimestamp = SNDK.Date.DateTimeToTimestamp (query.GetDateTime (qb.ColumnPos ("oprettet")));
+					result._updatetimestamp = SNDK.Date.DateTimeToTimestamp (query.GetDateTime (qb.ColumnPos ("sidstrettet")));
 					result._debitor = C5.Debitor.Load (query.GetString (qb.ColumnPos ("konto")).Replace (" ", ""));
+
+					success = true;
 				}
 			}
 			
 			query.Dispose ();
 			query = null;
 			qb = null;
-			
+
+			if (!success)
+			{
+				// Exception: OrderLoadId
+				throw new Exception (string.Format (Strings.Exception.OrderLoadId, Id));
+			}
+
+			// Load orderlines.
+			result._orderlines = OrderLine.List (result);
+
+			// TEMP2
+			result._temp2 = false;
+
 			return result;
 		}
 
+		public static void Delete (string Id)
+		{
+			bool success = false;
+
+			if (Order.Load (Id).Invoiced)
+			{
+				// Exception: OrderLineDeleteInvoiced
+				throw new Exception (string.Format (Strings.Exception.OrderDeleteInvoiced, Id));
+			}
+						
+			QueryBuilder qb = new QueryBuilder (QueryBuilderType.Delete);
+			qb.Table ("ordkart");			
+			qb.AddWhere ("nummer like '%"+ Id +"'");
+			
+			Query query = Runtime.DBConnection.Query (qb.QueryString);
+			
+			if (query.AffectedRows > 0) 
+			{
+				success = true;
+			}
+			
+			query.Dispose ();
+			query = null;
+			qb = null;
+			
+			if (!success) 
+			{
+				// Exception: OrderLineDelete
+				throw new Exception (string.Format (Strings.Exception.OrderLineDeleteId, Id));
+			}
+
+			// Delete orderlines connected to order that is being deleted.
+			foreach (OrderLine line in OrderLine.List (Id))
+			{
+				OrderLine.Delete (line.Id);
+			}
+		}
+
 		public static List<Order> List ()
+		{
+			return List (string.Empty);
+		}
+
+		public static List<Order> List (Debitor Debitor)
+		{
+			return List (Debitor.Id);
+		}
+
+		internal static List<Order> List (string DebitorId)
 		{
 			List<Order> result = new List<Order> ();
 			
 			QueryBuilder qb = new QueryBuilder (QueryBuilderType.Select);
 			qb.Table ("ordkart");
 			qb.Columns ("nummer");
+
+			if (DebitorId != string.Empty)
+			{
+				qb.AddWhere ("konto like '%"+ DebitorId +"'");
+			}
 			
 			Query query = Runtime.DBConnection.Query (qb.QueryString);
 			if (query.Success)
@@ -335,6 +544,7 @@ namespace C5
 					}
 					catch
 					{					
+						// This will catch load exceptions while adding orders to the list. That way corrupt orders will be ommited.
 					}
 				}
 			}
@@ -345,6 +555,7 @@ namespace C5
 			
 			return result;
 		}
+		#endregion
 	}
 }
 

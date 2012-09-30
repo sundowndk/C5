@@ -29,10 +29,11 @@
     <ConsolePause>False</ConsolePause>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Test|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Test</OutputPath>
     <WarningLevel>4</WarningLevel>
+    <DebugSymbols>True</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -53,10 +54,12 @@
     <Compile Include="C5\Debitor.cs" />
     <Compile Include="C5\Product.cs" />
     <Compile Include="C5\OrderLine.cs" />
+    <Compile Include="C5.Strings\Exception.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="C5\" />
     <Folder Include="C5.Enums\" />
+    <Folder Include="C5.Strings\" />
   </ItemGroup>
 </Project>

@@ -35,21 +35,92 @@ namespace Test
 
 			if (testorder)
 			{
+//				Order o1 = Order.Load ("11223");
+//				o1.RemoveLine (1);
+
+//				Debitor.Delete ("1200470");
+
 				Debitor d1 = Debitor.Load ("1200470");
 
+				foreach (Order o in Order.List (d1))
+				{
+					Console.WriteLine (o.Id +" "+ o.Invoiced);
 
-				Order o1 = new Order (d1);
+					Order.Delete (o.Id);
 
-				o1.Save ();
-				Console.WriteLine ("Order id:"+ o1.Id);
+				}
+
+				Environment.Exit (0);
+
+
+
+//				Product d2 = Product.Load ("514");
+//				Product d3 = Product.Load ("016");
+//
+//				Order o1 = new Order (d1);
+//				o1.AddLine (d2.Id, d2.Name, DateTime.Now, DateTime.Now, d2.Unit, 1, d2.Price, d2.Price);
+//				o1.AddLine (d3.Id, d3.Name, DateTime.Now, DateTime.Now, d3.Unit, 1, d3.Price, d3.Price);
+//
+//				foreach (OrderLine line in o1.OrderLines)
+//				{
+//					Console.WriteLine (line.Id +" "+ line.Sort +" "+ line.Text);
+//				}
+//
+
+
+//				o1.RemoveLine (o1.OrderLines[0].Id);
+//
+//				o1.Save ();
+//
+//
+//
+//				o1.Save ();
+//
+//				Order o2 = Order.Load (o1.Id);
+//
+//				foreach (OrderLine line in o2.OrderLines)
+//				{
+//					Console.WriteLine (line.Id +" "+ line.Sort +" "+ line.Text);
+//				}
+
+//				Console.WriteLine (o1.Id);
+			
+//				OrderLine.Delete ("194767");
+
+//				OrderLine o1 = OrderLine.Load ("194767");
+
+
+//				Console.WriteLine (o1.Text);
+//				Console.WriteLine (o1.Amount);
+//				Console.WriteLine (o1.Unit);
+//				Console.WriteLine (o1.Price);
+//				Console.WriteLine (o1.Total);
+
+
+//				Debitor d1 = Debitor.Load ("1200470");
+//				Product d2 = Product.Load ("514");
+
+
+//				Order o1 = new Order (d1);
+
+//				o1.AddLine (d2.Id, d2.Name, DateTime.Now, DateTime.Now, d2.Unit, 1, d2.Price, d2.Price);
+
+//				o1.Save ();
+//				Console.WriteLine ("Order id:"+ o1.Id);
 
 //				C5.Order o1 = C5.Order.Load ("11163");
 
 //				Console.WriteLine (o1.Debitor.Name);
 
+//				11170
+//				Order o1 = Order.Load ("11170");
+
+//				Console.WriteLine (o1.Debitor.Name);
+//				Console.WriteLine (C5.Helpers.NewOrderLineNo (o1.Id));
+
 //				foreach (Order o in C5.Order.List ())
 //				{
-//					Console.WriteLine (o.Debitor.Name);
+//					Console.WriteLine (o.Id);
 //				}
 
 //				Console.WriteLine ("GetDebitorId: "+ C5.Helpers.GetDebitorId ());

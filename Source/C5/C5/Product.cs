@@ -10,8 +10,8 @@ namespace C5
 	public class Product
 	{
 		string _id;
-		int _transactionid;
 		string _name;
+		string _unit;
 		decimal _price;
 						
 		public string Id
@@ -27,6 +27,14 @@ namespace C5
 			get
 			{
 				return this._name;
+			}
+		}
+
+		public string Unit
+		{
+			get
+			{
+				return this._unit;
 			}
 		}
 
@@ -53,9 +61,9 @@ namespace C5
 				qb.Table ("lagkart");
 				qb.Columns 
 					(
-						"lxbenummer",
 						"varenummer",
-						"varenavn1"
+						"varenavn1",
+						"enhed"
 					);
 			
 				qb.AddWhere ("varenummer like '%"+ Id +"'");
@@ -67,8 +75,8 @@ namespace C5
 					if (query.NextRow ())
 					{
 						result._id = Id;
-						result._transactionid = query.GetInt (qb.ColumnPos ("lxbenummer"));
-						result._name = query.GetString (qb.ColumnPos ("varenavn1"));										
+						result._name = query.GetString (qb.ColumnPos ("varenavn1"));
+						result._unit = query.GetString (qb.ColumnPos ("enhed"));
 					}
 				}
 
@@ -113,6 +121,7 @@ namespace C5
 			result.Add ("id", this._id);
 			result.Add ("name", this._name);
 			result.Add ("price", this._price);
+			result.Add ("enhed", this._unit);
 			
 			return SNDK.Convert.ToXmlDocument (result, this.GetType ().FullName.ToLower ());
 		}
