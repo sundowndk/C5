@@ -128,7 +128,7 @@ namespace C5
 		{
 			// TODO: This should be fixed.
 			int gebyrfm = 0;
-			if (this._debitor.Url == string.Empty)
+			if (this._debitor.Url == string.Empty || this._debitor.Url == "")
 			{
 				gebyrfm = 30;
 			}
@@ -245,11 +245,11 @@ namespace C5
 						string.Empty, // kasserabat
 						"DKK", // valuta
 						0, // sprog
-						this._debitor.CreditPolicy, // betaling
+						this._debitor.CreditPolicy.Id, // betaling
 						string.Empty, // levering
 						0, // spxrret
 						string.Empty, //sxlger
-						this._debitor.VatCode, // moms
+						this._debitor.VatCode.Id, // moms
 						0, // beholdning
 						string.Empty, // afdeling
 						string.Empty, // gironummer
@@ -294,6 +294,7 @@ namespace C5
 						string.Empty // betalingstid
 					);
 
+				Console.WriteLine (qb.QueryString);
 				Query query = Runtime.DBConnection.Query (qb.QueryString);
 
 				if (query.AffectedRows == 0) 
@@ -356,7 +357,7 @@ namespace C5
 					);
 				
 				qb.AddWhere ("nummer like '%"+ this._id +"'");
-				
+
 				Query query = Runtime.DBConnection.Query (qb.QueryString);
 				
 				if (query.AffectedRows == 0) 
@@ -391,7 +392,7 @@ namespace C5
 			}
 		}
 
-		public void AddLine (string ProductId, string Text, DateTime PeriodBegin, DateTime PeriodEnd, string Unit, decimal Amount, decimal Price, decimal Total)
+		public void AddLine (string ProductId, string Text, DateTime PeriodBegin, DateTime PeriodEnd, string Unit, decimal Amount, decimal Price, decimal Total, string Notes)
 		{
 			OrderLine line = new OrderLine (this);
 
@@ -404,6 +405,7 @@ namespace C5
 			line.Amount = Amount;
 			line.Price = Price;
 			line.Total = Total;
+			line.Notes = Notes;
 
 			this._orderlines.Add (line);
 		}

@@ -27,10 +27,10 @@ namespace C5
 		string _email;
 		string _url;
 
-		string _creditpolicy;
+		string _creditpolicyid;
 
 		string _vatno;
-		string _vatcode;
+		string _vatcodeid;
 		#endregion
 
 		#region Temp Fields
@@ -198,16 +198,23 @@ namespace C5
 			}
 		}
 
-		public string CreditPolicy
+		public CreditPolicy CreditPolicy
 		{
 			get
 			{
-				return this._creditpolicy;
+				CreditPolicy result = CreditPolicy.Default;
+
+				if (this._creditpolicyid != string.Empty)
+				{
+					result = CreditPolicy.Load (this._creditpolicyid);
+				}
+
+				return result;
 			}
 
 			set
 			{
-				this._creditpolicy = value;
+				this._creditpolicyid = value.Id;
 			}
 		}
 
@@ -224,16 +231,23 @@ namespace C5
 			}
 		}
 
-		public string VatCode
+		public VatCode VatCode
 		{
 			get
 			{
-				return this._vatcode;
+				VatCode result = VatCode.Default;
+				
+				if (this._vatcodeid != string.Empty)
+				{
+					result = VatCode.Load (this._vatcodeid);
+				}
+				
+				return result;
 			}
-
+			
 			set
 			{
-				this._vatcode = value;
+				this._vatcodeid = value.Id;
 			}
 		}
 		#endregion
@@ -260,10 +274,11 @@ namespace C5
 			this._email = string.Empty;
 			this._url = string.Empty;
 
-			this._creditpolicy = string.Empty;
+			this._creditpolicyid = string.Empty;
+			this._vatcodeid = string.Empty;
 
 			this._vatno = string.Empty;
-			this._vatcode = "U25";
+			this._vatcodeid = string.Empty;
 		}
 		#endregion
 
@@ -327,10 +342,10 @@ namespace C5
 						"forfalden",
 						"beregnet",
 						"saldomax",
-						"saldoddk",
+						"saldodkk",
 						"sxgenavn",
 						"slettransport",
-						"kontakt",
+						"kontant",
 						"indbetalmxde",
 						"ordregruppe",
 						"projektgruppe",
@@ -366,11 +381,11 @@ namespace C5
 						string.Empty, // billede
 						"DKK", // valuta
 						0, // sprog
-						this._creditpolicy, // betaling
+						this._creditpolicyid, // betaling
 						string.Empty, // levering
 						0, // spxrret
 						string.Empty, // sxlger
-						this._vatcode, // moms
+						this._vatcodeid, // moms
 						0, // sletstatistik
 						string.Empty, // gironummer
 						this._vatno, // momsnummer
@@ -389,10 +404,10 @@ namespace C5
 						0, // forfalden
 						"1900-01-01 00:00:00.000", // beregnet
 						0, // saldomax
-						0, // saldoddk
+						0, // saldodkk
 						string.Empty, // sxgenavn
 						0, // slettransport
-						0, // kontakt
+						0, // kontant
 						string.Empty, // indbetalmxde
 						string.Empty, // ordregruppe
 						0, // projektgruppe
@@ -403,6 +418,8 @@ namespace C5
 						string.Empty, // mobil
 						string.Empty // kraknr
 					);
+
+				Console.WriteLine (qb.QueryString);
 
 				Query query = Runtime.DBConnection.Query (qb.QueryString);
 
@@ -454,9 +471,9 @@ namespace C5
 						this._fax, // fax
 						this._email, // email
 						this._url, // url
-						this._creditpolicy, // betaling
+						this._creditpolicyid, // betaling
 						this._vatno, // momsnummer
-						this._vatcode // moms
+						this._vatcodeid // moms
 					);
 
 				qb.AddWhere ("konto like '%"+ this._id +"'");
@@ -536,10 +553,10 @@ namespace C5
 					result._email = query.GetString (qb.ColumnPos ("email"));
 					result._url = query.GetString (qb.ColumnPos ("url"));
 
-					result._creditpolicy = query.GetString (qb.ColumnPos ("betaling"));
+					result._creditpolicyid = query.GetString (qb.ColumnPos ("betaling"));
 
 					result._vatno = query.GetString (qb.ColumnPos ("momsnummer"));
-					result._vatcode = query.GetString (qb.ColumnPos ("moms"));
+					result._vatcodeid = query.GetString (qb.ColumnPos ("moms"));
 				}
 			}
 			

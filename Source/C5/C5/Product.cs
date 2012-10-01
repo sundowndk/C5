@@ -121,7 +121,7 @@ namespace C5
 			result.Add ("id", this._id);
 			result.Add ("name", this._name);
 			result.Add ("price", this._price);
-			result.Add ("enhed", this._unit);
+			result.Add ("unit", this._unit);
 			
 			return SNDK.Convert.ToXmlDocument (result, this.GetType ().FullName.ToLower ());
 		}
@@ -141,8 +141,6 @@ namespace C5
 				{					
 					try
 					{
-
-
 						result.Add (Load (query.GetString (qb.ColumnPos ("varenummer"))));
 					}
 					catch

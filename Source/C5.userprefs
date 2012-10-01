@@ -1,26 +1,29 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Test" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Test/Main.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="C5/C5/Helpers.cs">
     <Files>
-      <File FileName="Test/Main.cs" Line="33" Column="6" />
-      <File FileName="C5/C5/Debitor.cs" Line="598" Column="77" />
-      <File FileName="C5/C5/Order.cs" Line="547" Column="30" />
-      <File FileName="C5/C5/OrderLine.cs" Line="486" Column="51" />
-      <File FileName="C5/C5/Helpers.cs" Line="32" Column="1" />
-      <File FileName="C5/C5/Product.cs" Line="27" Column="7" />
+      <File FileName="Test/Main.cs" Line="46" Column="5" />
+      <File FileName="C5/C5/Debitor.cs" Line="372" Column="30" />
+      <File FileName="C5/C5/Order.cs" Line="408" Column="23" />
+      <File FileName="C5/C5/OrderLine.cs" Line="325" Column="105" />
+      <File FileName="C5/C5/Helpers.cs" Line="84" Column="43" />
+      <File FileName="C5/C5/Product.cs" Line="74" Column="6" />
       <File FileName="C5/C5.Strings/Exception.cs" Line="10" Column="23" />
+      <File FileName="C5/C5/CreditPolicy.cs" Line="120" Column="1" />
+      <File FileName="C5/C5/VatCode.cs" Line="53" Column="3" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="C5" expanded="True">
-            <Node name="C5" expanded="True" />
+            <Node name="C5" expanded="True">
+              <Node name="Helpers.cs" selected="True" />
+            </Node>
             <Node name="C5.Enums" expanded="True" />
             <Node name="C5.Strings" expanded="True" />
           </Node>
           <Node name="Test" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="Main.cs" selected="True" />
           </Node>
         </State>
       </Pad>

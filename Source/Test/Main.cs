@@ -9,16 +9,36 @@ namespace Test
 		public static void Main (string[] args)
 		{
 			C5.Runtime.DBConnection = new Connection (	SNDK.Enums.DatabaseConnector.Mssql,
-				                                          "172.20.0.54",
-				                                          "testdb",
-				                                          "testdb",
-				                                          "testdb",
-				                                          true);	
+			                                          "172.20.0.54",
+			                                          "c5qnax",
+			                                          "c5qnax",
+			                                          "c5qnax",
+			                                          true);	
 
-			bool testdebitor = false;
+			bool testvatcode = false;
+			bool testcreditpolicy = false;
+			bool testdebitor = true;
 			bool testinvoice = false;
-			bool testorder = true;
+			bool testorder = false;
 			bool testproduct = false;
+
+			Console.WriteLine (C5.Runtime.DBConnection.Connect ());
+
+			if (testvatcode)
+			{
+				foreach (VatCode vc in VatCode.List ())
+				{
+					Console.WriteLine (vc.Id +" : "+ vc.Text);
+				}
+			}
+
+			if (testcreditpolicy)
+			{
+				foreach (CreditPolicy c in CreditPolicy.List ())
+				{
+					Console.WriteLine (c.Id +" : "+ c.Text);
+				}
+			}
 
 			if (testproduct)
 			{
@@ -33,6 +53,30 @@ namespace Test
 				}
 			}
 
+			if (testdebitor)
+			{
+				Debitor d1 = new Debitor ();
+				d1.Name = "Rasmus Pedersen";
+				Console.WriteLine (d1.Id);
+//				d1.Save ();
+
+//				Debitor d1 = Debitor.Load ("1200470");
+
+
+//				Console.WriteLine (d1.VatCode.Text);
+//				Console.WriteLine (d1.CreditPolicy.Text);
+
+//				d1.VatCode = VatCode.Load ("U25");
+//				d1.Save ();
+
+//				d1.CreditPolicy = CreditPolicy.Load ("14dgNet");
+//				d1.Save ();
+
+
+
+
+			}
+
 			if (testorder)
 			{
 //				Order o1 = Order.Load ("11223");
@@ -42,35 +86,63 @@ namespace Test
 
 				Debitor d1 = Debitor.Load ("1200470");
 
-				foreach (Order o in Order.List (d1))
+				Product d2 = Product.Load ("514");
+				Product d3 = Product.Load ("016");
+
+				Order o1 = new Order (d1);
+
+				o1.AddLine (d2.Id, d2.Name, DateTime.Now, DateTime.Now, d2.Unit, 1, d2.Price, d2.Price, "Nota linie #1\nNota linie #2");
+				o1.AddLine (d3.Id, d3.Name, DateTime.Now, DateTime.Now, d3.Unit, 1, d3.Price, d3.Price, string.Empty);
+
+				o1.Save ();
+
+				Order o2 = Order.Load (o1.Id);
+
+				Console.WriteLine ("id:"+ o2.Id);
+				foreach (OrderLine line in o2.OrderLines)
 				{
-					Console.WriteLine (o.Id +" "+ o.Invoiced);
-
-					Order.Delete (o.Id);
-
+					Console.WriteLine ("text:"+ line.Text);
+					Console.WriteLine ("notes:"+ line.Notes);
+					Console.WriteLine ("");
 				}
 
-				Environment.Exit (0);
 
-
-
-//				Product d2 = Product.Load ("514");
-//				Product d3 = Product.Load ("016");
-//
-//				Order o1 = new Order (d1);
-//				o1.AddLine (d2.Id, d2.Name, DateTime.Now, DateTime.Now, d2.Unit, 1, d2.Price, d2.Price);
-//				o1.AddLine (d3.Id, d3.Name, DateTime.Now, DateTime.Now, d3.Unit, 1, d3.Price, d3.Price);
-//
-//				foreach (OrderLine line in o1.OrderLines)
+//				for (int i = 0; i < 1000; i++) 
 //				{
-//					Console.WriteLine (line.Id +" "+ line.Sort +" "+ line.Text);
+//					Product d2 = Product.Load ("514");
+//					Product d3 = Product.Load ("016");
+//					
+//					Order o1 = new Order (d1);
+//					o1.AddLine (d2.Id, d2.Name, DateTime.Now, DateTime.Now, d2.Unit, 1, d2.Price, d2.Price);
+//					o1.AddLine (d3.Id, d3.Name, DateTime.Now, DateTime.Now, d3.Unit, 1, d3.Price, d3.Price);
+//					
+//					foreach (OrderLine line in o1.OrderLines)
+//					{
+//						Console.WriteLine (line.Id +" "+ line.Sort +" "+ line.Text);
+//					}
+//					
+//					Console.WriteLine (o1.Id);
+//					
+//					o1.Save ();
 //				}
-//
+
+//				foreach (Order o in Order.List (d1))
+//				{
+//					Console.WriteLine (o.Id +" "+ o.Invoiced);
+
+//					Order.Delete (o.Id);
+
+//				}
+
+//				Environment.Exit (0);
+
+
+
 
 
 //				o1.RemoveLine (o1.OrderLines[0].Id);
 //
-//				o1.Save ();
+
 //
 //
 //

@@ -55,6 +55,8 @@
     <Compile Include="C5\Product.cs" />
     <Compile Include="C5\OrderLine.cs" />
     <Compile Include="C5.Strings\Exception.cs" />
+    <Compile Include="C5\CreditPolicy.cs" />
+    <Compile Include="C5\VatCode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

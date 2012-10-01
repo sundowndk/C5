@@ -28,6 +28,8 @@ namespace C5
 
 		decimal _price;
 		decimal _total;
+
+		string _notes;
 		#endregion
 
 		#region Temp Fields
@@ -184,6 +186,19 @@ namespace C5
 				this._total = value;
 			}
 		}
+
+		public string Notes
+		{
+			get
+			{
+				return this._notes;
+			}
+
+			set
+			{
+				this._notes = value;
+			}
+		}
 		#endregion
 
 		#region Constructor
@@ -209,6 +224,8 @@ namespace C5
 
 			this._price = 0;
 			this._total = 0;
+
+			this._notes = string.Empty;
 		}
 
 		private OrderLine ()
@@ -233,6 +250,8 @@ namespace C5
 
 			this._price = 0;
 			this._total = 0;
+
+			this._notes = string.Empty;
 		}
 		#endregion
 
@@ -389,6 +408,79 @@ namespace C5
 				query = null;
 				qb = null;
 			}
+
+			// Save notes.
+			if (this._notes != string.Empty)
+			{
+				// Remove old notes.
+				{
+					QueryBuilder qb = new QueryBuilder (QueryBuilderType.Delete);
+					qb.Table ("notat");
+					qb.AddWhere ("notatrecid = '"+ this._id +"'");
+				
+					Query query = Runtime.DBConnection.Query (qb.QueryString);
+								
+					query.Dispose ();
+					query = null;
+					qb = null;
+				}
+
+				// Write new notes.
+				{
+					int lineno = 0;
+					foreach (string note in this._notes.Split ("\n".ToCharArray (), StringSplitOptions.RemoveEmptyEntries))
+					{
+						QueryBuilder qb = new QueryBuilder (QueryBuilderType.Insert);
+						qb.Table ("notat");
+						
+						qb.Columns 	
+							(
+								"dataset",
+								"lxbenummer",
+								"sidstrettet",
+								"notatfileid",
+								"notatrecid",
+								"linienummer",
+								"tekst",
+								"dato"
+								);
+						
+						qb.Values
+							(
+								"DAT", // datasaet
+								Helpers.NewSequenceNumber (), // lxbenummer
+								String.Format ("{0:yyyy-MM-dd} 00:00:00.000", SNDK.Date.TimestampToDateTime (this._updatetimestamp)), // sidstrettet
+								"128", // notatfileid
+								this._id, // notatrecid
+								lineno*2, // linienummer
+								note, // tekst							
+								String.Format ("{0:yyyy-MM-dd} 00:00:00.000", SNDK.Date.TimestampToDateTime (this._updatetimestamp)) // dato
+								);
+												
+						Query query = Runtime.DBConnection.Query (qb.QueryString);
+						
+						if (query.AffectedRows == 0) 
+						{
+							// Exception: OrderLineSave
+//							throw new Exception (string.Format (Strings.Exception.OrderLineSave, this._id));
+						}
+						
+						query.Dispose ();
+						query = null;
+						qb = null;
+					}
+				}
+			}
+
+//			if (trim($line['note']) != ""){
+//				$split = explode("\n", $line['note']);
+//				$o = 1;
+//				foreach($split as $part){
+//					mssql_query("INSERT INTO notat VALUES ('DAT', '".$this->get_lxbenummer()."', '".strftime("%Y-%m-%d")." 00:00:00.000', 128, ".$LXBE.", ".($o*2).", '".$part."', '".strftime("%Y-%m-%d")." 00:00:00.000')");
+//					$o++;
+//				}
+//			}
+
 		}
 		#endregion
 
@@ -398,52 +490,84 @@ namespace C5
 			bool success = false;
 			OrderLine result = new OrderLine ();
 
-			QueryBuilder qb = new QueryBuilder (QueryBuilderType.Select);
-			qb.Table ("ordlinie");
-			qb.Columns 
-				(
-					"sidstrettet",
-					"varenummer",
-					"linienr",
-					"antal",
-					"pris",
-					"belxb",
-					"tekst",
-					"enhed",
-					"oprettet"
+			{
+				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Select);
+				qb.Table ("ordlinie");
+				qb.Columns 
+					(
+						"sidstrettet",
+						"varenummer",
+						"linienr",
+						"antal",
+						"pris",
+						"belxb",
+						"tekst",
+						"enhed",
+						"oprettet"
 					);
 			
-			qb.AddWhere ("lxbenummer like '"+ Id +"'");
+				qb.AddWhere ("lxbenummer like '"+ Id +"'");
 			
-			Query query = Runtime.DBConnection.Query (qb.QueryString);
+				Query query = Runtime.DBConnection.Query (qb.QueryString);
 			
-			if (query.Success)
-			{
-				if (query.NextRow ())
+				if (query.Success)
 				{
-					result._id = Id;
-					result._createtimestamp = SNDK.Date.DateTimeToTimestamp (query.GetDateTime (qb.ColumnPos ("oprettet")));
-					result._productid = query.GetString (qb.ColumnPos ("varenummer"));
-					result._sort = query.GetDecimal (qb.ColumnPos ("linienr"));
-					result._amount = query.GetDecimal (qb.ColumnPos ("antal"));
-					result._price = query.GetDecimal (qb.ColumnPos ("pris"));
-					result._total = query.GetDecimal (qb.ColumnPos ("belxb"));
-					result._text = query.GetString (qb.ColumnPos ("tekst"));
-					result._unit = query.GetString (qb.ColumnPos ("enhed"));
-					result._updatetimestamp = SNDK.Date.DateTimeToTimestamp (query.GetDateTime (qb.ColumnPos ("sidstrettet")));
+					if (query.NextRow ())
+					{
+						result._id = Id;
+						result._createtimestamp = SNDK.Date.DateTimeToTimestamp (query.GetDateTime (qb.ColumnPos ("oprettet")));
+						result._productid = query.GetString (qb.ColumnPos ("varenummer"));
+						result._sort = query.GetDecimal (qb.ColumnPos ("linienr"));
+						result._amount = query.GetDecimal (qb.ColumnPos ("antal"));
+						result._price = query.GetDecimal (qb.ColumnPos ("pris"));
+						result._total = query.GetDecimal (qb.ColumnPos ("belxb"));
+						result._text = query.GetString (qb.ColumnPos ("tekst"));
+						result._unit = query.GetString (qb.ColumnPos ("enhed"));
+						result._updatetimestamp = SNDK.Date.DateTimeToTimestamp (query.GetDateTime (qb.ColumnPos ("sidstrettet")));
 
-					success = true;
+						success = true;
+					}
+				}
+			
+				query.Dispose ();
+				query = null;
+				qb = null;
+			
+				if (!success)
+				{
+					// Exception: Exception.OrderLineLoadId
+					throw new Exception (string.Format (Strings.Exception.OrderLineLoadId, Id));
 				}
 			}
-			
-			query.Dispose ();
-			query = null;
-			qb = null;
-			
-			if (!success)
+
+			// Load notes.
 			{
-				// Exception: Exception.OrderLineLoadId
-				throw new Exception (string.Format (Strings.Exception.OrderLineLoadId, Id));
+				QueryBuilder qb = new QueryBuilder (QueryBuilderType.Select);
+				qb.Table ("notat");
+				qb.Columns 
+					(
+						"tekst"
+						);
+
+				qb.AddWhere ("notatrecid = '"+ Id +"'");
+
+				qb.OrderBy ("linienummer", QueryBuilderOrder.Accending);
+				
+				Query query = Runtime.DBConnection.Query (qb.QueryString);
+				
+				if (query.Success)
+				{
+					while (query.NextRow ())
+					{
+						result._notes += query.GetString (qb.ColumnPos ("tekst")) +"\n";
+					}
+				}
+								
+				query.Dispose ();
+				query = null;
+				qb = null;
+
+				result._notes = result._notes.TrimEnd ("\n".ToCharArray ());
 			}
 
 			// TEMP1
